@@ -16,8 +16,8 @@
 
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        /* Define a imagem de fundo com uma sobreposição escura suave para dar contraste */
-        background-image: linear-gradient(rgba(229, 236, 233, 0.85), rgba(229, 236, 233, 0.85)), 
+        /* Aplica a imagem de fundo com uma máscara translúcida para garantir excelente legibilidade */
+        background-image: linear-gradient(rgba(229, 236, 233, 0.88), rgba(229, 236, 233, 0.88)), 
                           url('https://wikimedia.org');
         background-size: cover;
         background-position: center;
@@ -31,14 +31,14 @@
       }
 
       header {
-        background-color: rgba(27, 77, 62, 0.95); /* Leve transparência */
+        background-color: rgba(27, 77, 62, 0.95);
         color: white;
         width: 100%;
         text-align: center;
         padding: 1.5rem 0;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         border-bottom: 4px solid var(--accent);
-        backdrop-filter: blur(5px); /* Efeito borrado elegante atrás do texto */
+        backdrop-filter: blur(5px);
       }
 
       header h1 {
@@ -239,6 +239,7 @@
     </footer> 
 
     <script>
+      // Banco de dados do Quiz
       const flashcardsData = [
         {
           question: "Pelé é o único jogador na história do futebol a vencer 3 Copas do Mundo como atleta.",
@@ -275,6 +276,7 @@
       const explanationText = document.getElementById('explanation-text');
       const counterElement = document.getElementById('card-counter');
 
+      // Inicializa e renderiza o conteúdo do cartão
       function loadCard(index) {
         const data = flashcardsData[index];
         questionText.textContent = data.question;
@@ -293,10 +295,12 @@
         }
       }
 
+      // Altera o estado do flip (gira o card)
       function flipCard() {
         cardElement.classList.toggle('flipped');
       }
 
+      // Avança de cartão de forma limpa sem quebrar a animação de rotação
       function nextCard() {
         if (cardElement.classList.contains('flipped')) {
           cardElement.classList.remove('flipped');
@@ -308,13 +312,14 @@
         }
       }
 
+      // Troca os dados do índice atual
       function switchCard() {
         currentIndex = (currentIndex + 1) % flashcardsData.length;
         loadCard(currentIndex);
       }
 
+      // Executa a primeira carga na inicialização da página
       loadCard(currentIndex);
     </script>
   </body> 
 </html>
-
