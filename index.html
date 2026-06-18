@@ -1,5 +1,318 @@
-<html>
+<!DOCTYPE html> 
+<html lang="pt-br"> 
+  <head> 
+    <meta charset="UTF-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+    <title>Flashcards: Mitos e Verdades da Copa do Mundo</title> 
+    <style>
+      :root {
+        --primary: #107e43; /* Verde Campo */
+        --accent: #f39c12;  /* Dourado Taça */
+        --success: #27ae60; /* Verde Verdade */
+        --danger: #c0392b;  /* Vermelho Mito */
+        --dark: #1b4d3e;    /* Verde Escuro */
+        --light: #f4f6f6;
+      }
 
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #e5ece9;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        align-items: center;
+      }
 
+      header {
+        background-color: var(--dark);
+        color: white;
+        width: 100%;
+        text-align: center;
+        padding: 1.5rem 0;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        border-bottom: 4px solid var(--accent);
+      }
 
+      header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+      }
+
+      header p {
+        margin: 0.5rem 0 0 0;
+        font-size: 1rem;
+        color: #bdc3c7;
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        gap: 1.5rem;
+        max-width: 500px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .scoreboard {
+        font-size: 1rem;
+        font-weight: bold;
+        color: var(--dark);
+        background: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      }
+
+      /* Estrutura do Flashcard com Efeito Flip */
+      .flashcard-container {
+        perspective: 1000px;
+        width: 100%;
+        height: 320px;
+        cursor: pointer;
+      }
+
+      .flashcard {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        border-radius: 15px;
+      }
+
+      .flashcard.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        border-radius: 15px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      .front {
+        background-color: white;
+        color: var(--dark);
+        border: 4px solid var(--primary);
+      }
+
+      .front h3 {
+        font-size: 1.4rem;
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      .front .hint {
+        font-size: 0.8rem;
+        color: #7f8c8d;
+        margin-top: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: bold;
+      }
+
+      .back {
+        transform: rotateY(180deg);
+        color: white;
+      }
+
+      .back.verdade {
+        background-color: var(--success);
+        border: 4px solid #1e7e43;
+      }
+
+      .back.mito {
+        background-color: var(--danger);
+        border: 4px solid #8e2a1e;
+      }
+
+      .back h2 {
+        margin: 0 0 1rem 0;
+        font-size: 2.2rem;
+        text-transform: uppercase;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      }
+
+      .back p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      /* Controles e Botões */
+      .controls {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+      }
+
+      button {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+
+      button:active {
+        transform: scale(0.98);
+      }
+
+      .btn-next {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .btn-next:hover {
+        background-color: #d35400;
+      }
+
+      footer {
+        background-color: var(--dark);
+        color: #bdc3c7;
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+        font-size: 0.9rem;
+        border-top: 4px solid var(--accent);
+      }
+    </style>
+  </head> 
+  <body> 
+    <header> 
+      <h1>Mitos e Verdades da Copa</h1>
+      <p>Grandes Países, Atletas e Recordes</p>
+    </header> 
+ 
+    <main> 
+      <div class="scoreboard" id="card-counter">Cartão 1 de 5</div>
+
+      <div class="flashcard-container" onclick="flipCard()">
+        <div class="flashcard" id="card">
+          <!-- Face da Frente (Pergunta) -->
+          <div class="face front">
+            <h3 id="question-text">Carregando pergunta...</h3>
+            <div class="hint">Clique para chutar a resposta ⚽</div>
+          </div>
+          <!-- Face de Trás (Resposta) -->
+          <div class="face back" id="card-back">
+            <h2 id="verdict-text">Resultado</h2>
+            <p id="explanation-text">Explicação aqui.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn-next" onclick="nextCard()">Próximo Desafio ➔</button>
+      </div>
+    </main> 
+ 
+    <footer> 
+      <p>&copy; 2026 - Quiz Histórico da Copa do Mundo</p>
+    </footer> 
+
+    <script>
+      // Banco de dados temático sobre a Copa do Mundo
+      const flashcardsData = [
+        {
+          question: "Pelé é o único jogador na história do futebol a vencer 3 Copas do Mundo como atleta.",
+          isTrue: true,
+          explanation: "Verdade! O Rei do Futebol conquistou os títulos de 1958, 1962 e 1970, feito que nenhum outro jogador conseguiu repetir até hoje."
+        },
+        {
+          question: "O maior artilheiro de todas as edições das Copas do Mundo é o brasileiro Ronaldo Fenômeno.",
+          isTrue: false,
+          explanation: "Mito! Ronaldo marcou 15 gols, mas o recorde pertence ao alemão Miroslav Klose, que balançou as redes 16 vezes no total das Copas."
+        },
+        {
+          question: "O Brasil é o país com mais títulos mundiais, mas a Itália e a Alemanha vêm logo atrás com 4 títulos cada.",
+          isTrue: true,
+          explanation: "Verdade! O Brasil é o único pentacampeão (5 títulos). Italianos (1934, 1938, 1982, 2006) e alemães (1954, 1974, 1990, 2014) dividem a vice-liderança."
+        },
+        {
+          question: "Lionel Messi superou o recorde de jogador com mais partidas disputadas em Copas do Mundo.",
+          isTrue: true,
+          explanation: "Verdade! Ao entrar em campo na final de 2022, Messi alcançou 26 partidas em Copas, ultrapassando o recorde anterior do alemão Lothar Matthäus, que tinha 25."
+        },
+        {
+          question: "A seleção da Inglaterra é a segunda maior vencedora europeia, acumulando 3 títulos mundiais.",
+          isTrue: false,
+          explanation: "Mito! A Inglaterra possui apenas 1 título mundial, conquistado em 16ef6, quando jogou em casa."
+        }
+      ];
+
+      let currentIndex = 0;
+      const cardElement = document.getElementById('card');
+      const cardBackElement = document.getElementById('card-back');
+      const questionText = document.getElementById('question-text');
+      const verdictText = document.getElementById('verdict-text');
+      const explanationText = document.getElementById('explanation-text');
+      const counterElement = document.getElementById('card-counter');
+
+      // Inicializa o cartão com o tema Copa
+      function loadCard(index) {
+        const data = flashcardsData[index];
+        questionText.textContent = data.question;
+        explanationText.textContent = data.explanation;
+        
+        // Atualiza o contador de progresso
+        counterElement.textContent = `Cartão ${index + 1} de ${flashcardsData.length}`;
+        
+        cardBackElement.classList.remove('verdade', 'mito');
+        
+        if (data.isTrue) {
+          verdictText.textContent = "Verdade! 🏆";
+          cardBackElement.classList.add('verdade');
+        } else {
+          verdictText.textContent = "Mito! ❌";
+          cardBackElement.classList.add('mito');
+        }
+      }
+
+      // Função para virar o cartão
+      function flipCard() {
+        cardElement.classList.toggle('flipped');
+      }
+
+      // Função para avançar de cartão com efeito suave
+      function nextCard() {
+        if (cardElement.classList.contains('flipped')) {
+          cardElement.classList.remove('flipped');
+          setTimeout(() => {
+            updateIndexAndLoad();
+          }, 300);
+        } else {
+          updateIndexAndLoad();
+        }
+      }
+
+      function updateIndexAndLoad() {
+        currentIndex = (currentIndex + 1) % flashcardsData.length;
+        loadCard(currentIndex);
+      }
+
+      // Carrega o jogo
+      loadCard(currentIndex);
+    </script>
+  </body> 
 </html>
